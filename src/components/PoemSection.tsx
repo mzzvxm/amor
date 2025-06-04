@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Heart } from "lucide-react"
 
 interface PoemSectionProps {
   onProgressUpdate?: (progress: number) => void
@@ -11,13 +10,12 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
   const [currentPhase, setCurrentPhase] = useState<"welcome" | "poem">("welcome")
   const [currentLineIndex, setCurrentLineIndex] = useState(0)
   const [isComplete, setIsComplete] = useState(false)
-  const [showDaysCounter, setShowDaysCounter] = useState(false)
+  const [showTimeText, setShowTimeText] = useState(false)
   const [showEyesPhoto, setShowEyesPhoto] = useState(false)
   const [lineKey, setLineKey] = useState(0)
   const [days, setDays] = useState(0)
   const [hours, setHours] = useState(0)
   const [minutes, setMinutes] = useState(0)
-  const [seconds, setSeconds] = useState(0)
 
   const welcomeLines = [
     "oi meu amor",
@@ -59,16 +57,14 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
       const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24))
       const totalHours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
       const totalMinutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-      const totalSeconds = Math.floor((diff % (1000 * 60)) / 1000)
 
       setDays(totalDays)
       setHours(totalHours)
       setMinutes(totalMinutes)
-      setSeconds(totalSeconds)
     }
 
     updateTime()
-    const interval = setInterval(updateTime, 1000)
+    const interval = setInterval(updateTime, 60000) // Update every minute
 
     return () => clearInterval(interval)
   }, [])
@@ -99,29 +95,29 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
     }
   }
 
-  const shouldShowDaysCounter = () => {
-    return currentPhase === "poem" && currentLineIndex >= 8
+  const shouldShowTimeText = () => {
+    return currentPhase === "poem" && currentLineIndex === 8 // Linha "você é um feitiço bordado a mão"
   }
 
   const shouldShowEyesPhoto = () => {
-    return currentPhase === "poem" && (currentLineIndex === 12 || currentLineIndex === 13)
+    return currentPhase === "poem" && (currentLineIndex === 12 || currentLineIndex === 13) // Linhas sobre os olhos
   }
 
-  // Auto-dismiss pop-ups with smooth transitions
+  // Auto-dismiss elements
   useEffect(() => {
-    if (showDaysCounter) {
+    if (showTimeText) {
       const timer = setTimeout(() => {
-        setShowDaysCounter(false)
-      }, 5000)
+        setShowTimeText(false)
+      }, 4000)
       return () => clearTimeout(timer)
     }
-  }, [showDaysCounter])
+  }, [showTimeText])
 
   useEffect(() => {
     if (showEyesPhoto) {
       const timer = setTimeout(() => {
         setShowEyesPhoto(false)
-      }, 4000)
+      }, 5000)
       return () => clearTimeout(timer)
     }
   }, [showEyesPhoto])
@@ -134,8 +130,8 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
     const duration = getLineDuration(currentLine)
 
     // Show elements based on progress
-    if (shouldShowDaysCounter() && !showDaysCounter) {
-      setShowDaysCounter(true)
+    if (shouldShowTimeText() && !showTimeText) {
+      setShowTimeText(true)
     }
     if (shouldShowEyesPhoto() && !showEyesPhoto) {
       setShowEyesPhoto(true)
@@ -173,47 +169,27 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-95 backdrop-blur-smooth flex items-center justify-center overflow-hidden">
-      {/* Animated gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blood-red-900/10 via-transparent via-purple-900/5 to-blood-red-900/10 animate-gradient"></div>
-
-      {/* Floating hearts with improved animations */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute will-change-transform"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 6}s`,
-            }}
-          >
-            <Heart size={Math.random() * 6 + 3} className="text-blood-red-400 heart-float fill-current opacity-20" />
-          </div>
-        ))}
-      </div>
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blood-red-900/5 via-transparent to-blood-red-900/5"></div>
 
       <div className="relative z-10 w-full px-6 text-center">
-        {/* Eyes photo popup - Smooth entrance */}
-        <div
-          className={`fixed top-8 right-8 z-20 transition-all duration-700 ease-custom ${
-            showEyesPhoto
-              ? "opacity-80 translate-y-0 scale-100"
-              : "opacity-0 translate-y-4 scale-95 pointer-events-none"
-          }`}
-        >
-          <div className="bg-black/50 backdrop-blur-smooth rounded-xl p-4 border border-blood-red-400/20 shadow-2xl smooth-transition smooth-hover">
-            <div className="w-52 h-14 bg-gradient-to-r from-blood-red-900/20 to-purple-900/20 rounded-lg flex items-center justify-center text-blood-red-200 text-sm font-light">
-              ✨ Seus olhos únicos
-            </div>
+        {/* Eyes photo - appears above the text when talking about eyes */}
+        {showEyesPhoto && (
+          <div className="mb-8 animate-fade-in">
+            <img
+              src="/placeholder.svg?height=150&width=900"
+              alt="Seus olhos únicos"
+              className="mx-auto rounded-lg shadow-2xl border border-blood-red-400/20 opacity-80"
+              style={{ maxWidth: "900px", height: "150px", objectFit: "cover" }}
+            />
           </div>
-        </div>
+        )}
 
-        {/* Main poem content with smooth text reveal */}
+        {/* Main poem content */}
         <div className="min-h-[200px] flex items-center justify-center">
-          <div key={lineKey} className="animate-text-reveal will-change-transform will-change-opacity">
+          <div key={lineKey} className="animate-text-reveal">
             <div
-              className={`leading-relaxed smooth-transition ${
+              className={`leading-relaxed ${
                 currentPhase === "welcome"
                   ? "text-xl md:text-2xl lg:text-3xl font-light"
                   : "text-lg md:text-xl lg:text-2xl font-light"
@@ -226,39 +202,14 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
           </div>
         </div>
 
-        {/* Days Counter Popup - Smooth entrance */}
-        <div
-          className={`fixed bottom-8 left-8 z-20 transition-all duration-700 ease-custom ${
-            showDaysCounter
-              ? "opacity-90 translate-y-0 scale-100"
-              : "opacity-0 translate-y-4 scale-95 pointer-events-none"
-          }`}
-        >
-          <div className="bg-black/60 backdrop-blur-smooth rounded-xl p-5 border border-blood-red-400/20 shadow-2xl max-w-xs smooth-transition smooth-hover">
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <Heart className="text-blood-red-400 animate-soft-pulse fill-current" size={18} />
-              <h3 className="text-sm font-semibold text-blood-red-200">Te amando há</h3>
-              <Heart className="text-blood-red-400 animate-soft-pulse fill-current" size={18} />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 text-center">
-              {[
-                { value: days, label: "dias" },
-                { value: hours, label: "horas" },
-                { value: minutes, label: "min" },
-                { value: seconds, label: "seg" },
-              ].map((item, index) => (
-                <div
-                  key={index}
-                  className={`bg-blood-red-900/20 rounded-lg p-3 smooth-transition hover:bg-blood-red-900/30 stagger-${index + 1}`}
-                >
-                  <div className="text-xl font-bold text-blood-red-300 smooth-transition">{item.value}</div>
-                  <div className="text-xs text-blood-red-400">{item.label}</div>
-                </div>
-              ))}
-            </div>
+        {/* Simple time text */}
+        {showTimeText && (
+          <div className="mt-8 animate-fade-in">
+            <p className="text-blood-red-300 text-lg font-light italic">
+              estou te amando há {days} dias, {hours} horas e {minutes} minutos
+            </p>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )
