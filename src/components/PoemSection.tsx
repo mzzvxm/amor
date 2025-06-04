@@ -206,7 +206,7 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
         {showEyesPhoto && (
           <div className="mb-8 animate-scale-in">
             <img
-              src="/placeholder.svg?height=150&width=900"
+              src="https://i.postimg.cc/jStLd6hk/Design-sem-nome-13.png"
               alt="Seus olhos únicos"
               className="mx-auto rounded-lg shadow-2xl border border-blood-red-400/30 opacity-85 smooth-transition hover:opacity-95"
               style={{ maxWidth: "900px", height: "150px", objectFit: "cover" }}
