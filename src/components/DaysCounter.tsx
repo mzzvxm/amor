@@ -25,11 +25,11 @@ const DaysCounter = () => {
   return (
     <div className="glass-effect rounded-xl p-8 text-center animate-fadeInUp">
       <div className="flex items-center justify-center gap-2 mb-4">
-        <Heart className="text-blood-red-500 animate-pulse-heart fill-current" size={24} />
+        <Heart className="text-purple-400 animate-pulse-heart fill-current" size={24} />
         <h2 className="text-2xl font-bold text-shadow">Estou te amando há</h2>
-        <Heart className="text-blood-red-500 animate-pulse-heart fill-current" size={24} />
+        <Heart className="text-purple-400 animate-pulse-heart fill-current" size={24} />
       </div>
-      <div className="text-6xl font-bold text-blood-red-400 mb-2 text-shadow">
+      <div className="text-6xl font-bold text-blue-400 mb-2 text-shadow">
         {days}
       </div>
       <div className="text-xl text-gray-300">

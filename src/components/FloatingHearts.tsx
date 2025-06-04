@@ -31,6 +31,8 @@ const FloatingHearts = () => {
     generateHearts();
   }, []);
 
+  const colors = ['text-purple-600', 'text-blue-600', 'text-pink-500'];
+
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       {hearts.map((heart) => (
@@ -45,7 +47,7 @@ const FloatingHearts = () => {
         >
           <Heart 
             size={heart.size} 
-            className="text-blood-red-600 heart-float fill-current"
+            className={`${colors[heart.id % colors.length]} heart-float fill-current`}
           />
         </div>
       ))}

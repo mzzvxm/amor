@@ -8,7 +8,7 @@ const SpotifyPlayer = () => {
   return (
     <div className="glass-effect rounded-xl p-8">
       <div className="flex items-center justify-center gap-2 mb-6">
-        <Music className="text-blood-red-500" size={24} />
+        <Music className="text-purple-400" size={24} />
         <h2 className="text-3xl font-bold text-center text-shadow">Nossa Música</h2>
       </div>
       
