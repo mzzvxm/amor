@@ -1,12 +1,13 @@
 
 import { useEffect, useState } from 'react';
-import { ChevronRight } from 'lucide-react';
 
-const PoemSection = () => {
+interface PoemSectionProps {
+  onProgressUpdate?: (progress: number) => void;
+}
+
+const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
   const [currentPhase, setCurrentPhase] = useState<'welcome' | 'poem'>('welcome');
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
-  const [showNext, setShowNext] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
 
   const welcomeLines = [
@@ -47,62 +48,58 @@ const PoemSection = () => {
     return lines[currentLineIndex] || '';
   };
 
+  const getLineDuration = (line: string) => {
+    return line.length > 50 ? 5000 : 3000;
+  };
+
+  const getTotalLines = () => {
+    return welcomeLines.length + poemLines.length;
+  };
+
+  const getCurrentProgress = () => {
+    const totalWelcomeLines = welcomeLines.length;
+    if (currentPhase === 'welcome') {
+      return currentLineIndex + 1;
+    } else {
+      return totalWelcomeLines + currentLineIndex + 1;
+    }
+  };
+
   useEffect(() => {
-    if (!isFullscreen) return;
+    if (isComplete) return;
 
     const lines = getCurrentLines();
-    if (currentLineIndex < lines.length) {
-      const timer = setTimeout(() => setShowNext(true), 3000);
-      return () => clearTimeout(timer);
-    } else if (currentPhase === 'welcome') {
-      // Passou por todas as linhas de boas-vindas, vai para o poema
-      const timer = setTimeout(() => {
+    const currentLine = getCurrentLine();
+    const duration = getLineDuration(currentLine);
+
+    // Notify parent about progress
+    if (onProgressUpdate) {
+      const progress = getCurrentProgress();
+      const total = getTotalLines();
+      onProgressUpdate((progress / total) * 100);
+    }
+
+    const timer = setTimeout(() => {
+      if (currentLineIndex < lines.length - 1) {
+        setCurrentLineIndex(prev => prev + 1);
+      } else if (currentPhase === 'welcome') {
+        // Passou por todas as linhas de boas-vindas, vai para o poema
         setCurrentPhase('poem');
         setCurrentLineIndex(0);
-        setShowNext(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    } else {
-      // Terminou o poema
-      setIsComplete(true);
-    }
-  }, [currentLineIndex, currentPhase, isFullscreen]);
+      } else {
+        // Terminou o poema
+        setIsComplete(true);
+        if (onProgressUpdate) {
+          onProgressUpdate(100);
+        }
+      }
+    }, duration);
 
-  const nextLine = () => {
-    const lines = getCurrentLines();
-    if (currentLineIndex < lines.length - 1) {
-      setCurrentLineIndex(prev => prev + 1);
-      setShowNext(false);
-    }
-  };
+    return () => clearTimeout(timer);
+  }, [currentLineIndex, currentPhase, isComplete, onProgressUpdate]);
 
-  const startExperience = () => {
-    setIsFullscreen(true);
-  };
-
-  const exitFullscreen = () => {
-    setIsFullscreen(false);
-    setCurrentPhase('welcome');
-    setCurrentLineIndex(0);
-    setShowNext(false);
-    setIsComplete(false);
-  };
-
-  if (!isFullscreen) {
-    return (
-      <div className="glass-effect rounded-xl p-12 text-center min-h-[300px] flex flex-col justify-center">
-        <h2 className="text-3xl font-light mb-8 text-white">Para Você</h2>
-        <p className="text-lg text-gray-300 mb-8 leading-relaxed">
-          Uma experiência especial criada com amor
-        </p>
-        <button
-          onClick={startExperience}
-          className="mx-auto px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full hover:from-purple-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
-        >
-          Começar
-        </button>
-      </div>
-    );
+  if (isComplete) {
+    return null;
   }
 
   return (
@@ -128,33 +125,7 @@ const PoemSection = () => {
             </div>
           </div>
         </div>
-        
-        {showNext && !isComplete && (
-          <button
-            onClick={nextLine}
-            className="mt-12 flex items-center gap-3 mx-auto text-purple-300 hover:text-purple-200 transition-colors animate-fadeInUp group"
-          >
-            <span className="text-lg">Continue...</span>
-            <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
-          </button>
-        )}
-
-        {isComplete && (
-          <button
-            onClick={exitFullscreen}
-            className="mt-12 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full hover:from-purple-700 hover:to-blue-700 transition-all duration-300 animate-fadeInUp"
-          >
-            Continuar para o site
-          </button>
-        )}
       </div>
-
-      <button
-        onClick={exitFullscreen}
-        className="absolute top-8 right-8 text-white hover:text-gray-300 transition-colors text-xl"
-      >
-        ✕
-      </button>
     </div>
   );
 };
