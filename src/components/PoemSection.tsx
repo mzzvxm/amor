@@ -69,6 +69,32 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
     return () => clearInterval(interval)
   }, [])
 
+  const addWordEffects = (text: string) => {
+    const wordEffects = {
+      fervor: "word-fervor",
+      queimam: "word-fire",
+      estrela: "word-star",
+      aceso: "word-bright",
+      feitiço: "word-magic",
+      mística: "word-mystic",
+      olhos: "word-eyes",
+      alma: "word-soul",
+      coração: "word-heart",
+      sempre: "word-eternity",
+      nome: "word-name",
+      destino: "word-destiny",
+    }
+
+    let processedText = text
+
+    Object.entries(wordEffects).forEach(([word, className]) => {
+      const regex = new RegExp(`\\b${word}\\b`, "gi")
+      processedText = processedText.replace(regex, `<span class="${className}">${word}</span>`)
+    })
+
+    return processedText
+  }
+
   const getCurrentLines = () => {
     return currentPhase === "welcome" ? welcomeLines : poemLines
   }
@@ -79,7 +105,7 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
   }
 
   const getLineDuration = (line: string) => {
-    return line.length > 50 ? 4500 : 3500
+    return line.length > 50 ? 5000 : 4000
   }
 
   const getTotalLines = () => {
@@ -167,46 +193,50 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
     return null
   }
 
+  const currentLine = getCurrentLine()
+  const processedLine = currentPhase === "poem" ? addWordEffects(currentLine) : currentLine
+
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-95 backdrop-blur-smooth flex items-center justify-center overflow-hidden">
-      {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blood-red-900/5 via-transparent to-blood-red-900/5"></div>
+      {/* Enhanced gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blood-red-900/8 via-purple-900/5 via-transparent to-blood-red-900/8 animate-gradient"></div>
 
       <div className="relative z-10 w-full px-6 text-center">
         {/* Eyes photo - appears above the text when talking about eyes */}
         {showEyesPhoto && (
-          <div className="mb-8 animate-fade-in">
+          <div className="mb-8 animate-scale-in">
             <img
               src="/placeholder.svg?height=150&width=900"
               alt="Seus olhos únicos"
-              className="mx-auto rounded-lg shadow-2xl border border-blood-red-400/20 opacity-80"
+              className="mx-auto rounded-lg shadow-2xl border border-blood-red-400/30 opacity-85 smooth-transition hover:opacity-95"
               style={{ maxWidth: "900px", height: "150px", objectFit: "cover" }}
             />
           </div>
         )}
 
-        {/* Main poem content */}
+        {/* Main poem content with enhanced animations */}
         <div className="min-h-[200px] flex items-center justify-center">
-          <div key={lineKey} className="animate-text-reveal">
+          <div key={lineKey} className="animate-text-reveal will-change-transform will-change-opacity">
             <div
-              className={`leading-relaxed ${
+              className={`leading-relaxed smooth-transition ${
                 currentPhase === "welcome"
                   ? "text-xl md:text-2xl lg:text-3xl font-light"
                   : "text-lg md:text-xl lg:text-2xl font-light"
               } ${getCurrentLine().includes("(seus olhos") ? "text-blood-red-300 italic text-base" : ""} ${
                 getCurrentLine().includes("seus olhos") ? "text-blood-red-200" : ""
               } text-white`}
-            >
-              {getCurrentLine()}
-            </div>
+              dangerouslySetInnerHTML={{ __html: processedLine }}
+            />
           </div>
         </div>
 
-        {/* Simple time text */}
+        {/* Enhanced time text */}
         {showTimeText && (
-          <div className="mt-8 animate-fade-in">
-            <p className="text-blood-red-300 text-lg font-light italic">
-              estou te amando há {days} dias, {hours} horas e {minutes} minutos
+          <div className="mt-8 animate-scale-in">
+            <p className="text-blood-red-300 text-lg font-light italic smooth-transition">
+              estou te <span className="word-heart">amando</span> há <span className="word-eternity">{days} dias</span>,{" "}
+              <span className="word-eternity">{hours} horas</span> e{" "}
+              <span className="word-eternity">{minutes} minutos</span>
             </p>
           </div>
         )}
