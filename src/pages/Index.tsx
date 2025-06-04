@@ -3,9 +3,6 @@
 import { useState } from "react"
 import DaysCounter from "../components/DaysCounter"
 import PoemSection from "../components/PoemSection"
-import MemoriesGallery from "../components/MemoriesGallery"
-import SpotifyPlayer from "../components/SpotifyPlayer"
-import LoveQuestions from "../components/LoveQuestions"
 import FloatingHearts from "../components/FloatingHearts"
 import { Heart } from "lucide-react"
 
