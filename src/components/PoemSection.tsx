@@ -13,6 +13,7 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
   const [isComplete, setIsComplete] = useState(false)
   const [showDaysCounter, setShowDaysCounter] = useState(false)
   const [showEyesPhoto, setShowEyesPhoto] = useState(false)
+  const [lineKey, setLineKey] = useState(0)
   const [days, setDays] = useState(0)
   const [hours, setHours] = useState(0)
   const [minutes, setMinutes] = useState(0)
@@ -82,7 +83,7 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
   }
 
   const getLineDuration = (line: string) => {
-    return line.length > 50 ? 5000 : 3000
+    return line.length > 50 ? 4500 : 3500
   }
 
   const getTotalLines = () => {
@@ -99,19 +100,19 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
   }
 
   const shouldShowDaysCounter = () => {
-    return currentPhase === "poem" && currentLineIndex >= 8 // Aparece na linha "você é um feitiço..."
+    return currentPhase === "poem" && currentLineIndex >= 8
   }
 
   const shouldShowEyesPhoto = () => {
-    return currentPhase === "poem" && (currentLineIndex === 12 || currentLineIndex === 13) // Linhas sobre os olhos
+    return currentPhase === "poem" && (currentLineIndex === 12 || currentLineIndex === 13)
   }
 
-  // Auto-dismiss pop-ups
+  // Auto-dismiss pop-ups with smooth transitions
   useEffect(() => {
     if (showDaysCounter) {
       const timer = setTimeout(() => {
         setShowDaysCounter(false)
-      }, 4000) // Desaparece após 4 segundos
+      }, 5000)
       return () => clearTimeout(timer)
     }
   }, [showDaysCounter])
@@ -120,7 +121,7 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
     if (showEyesPhoto) {
       const timer = setTimeout(() => {
         setShowEyesPhoto(false)
-      }, 3000) // Desaparece após 3 segundos
+      }, 4000)
       return () => clearTimeout(timer)
     }
   }, [showEyesPhoto])
@@ -150,9 +151,11 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
     const timer = setTimeout(() => {
       if (currentLineIndex < lines.length - 1) {
         setCurrentLineIndex((prev) => prev + 1)
+        setLineKey((prev) => prev + 1)
       } else if (currentPhase === "welcome") {
         setCurrentPhase("poem")
         setCurrentLineIndex(0)
+        setLineKey((prev) => prev + 1)
       } else {
         setIsComplete(true)
         if (onProgressUpdate) {
@@ -169,90 +172,93 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-95 backdrop-blur-lg flex items-center justify-center overflow-hidden">
-      {/* Subtle blood-red overlay with animation */}
-      <div className="absolute inset-0 bg-gradient-to-b from-blood-red-900/20 via-transparent to-blood-red-900/20 animate-pulse"></div>
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-95 backdrop-blur-smooth flex items-center justify-center overflow-hidden">
+      {/* Animated gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blood-red-900/10 via-transparent via-purple-900/5 to-blood-red-900/10 animate-gradient"></div>
 
-      {/* Floating hearts with blood-red tones */}
+      {/* Floating hearts with improved animations */}
       <div className="absolute inset-0 pointer-events-none">
-        {[...Array(6)].map((_, i) => (
+        {[...Array(8)].map((_, i) => (
           <div
             key={i}
-            className="absolute opacity-20"
+            className="absolute will-change-transform"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 4}s`,
+              animationDelay: `${Math.random() * 6}s`,
             }}
           >
-            <Heart size={Math.random() * 8 + 4} className="text-blood-red-400 heart-float fill-current" />
+            <Heart size={Math.random() * 6 + 3} className="text-blood-red-400 heart-float fill-current opacity-20" />
           </div>
         ))}
       </div>
 
       <div className="relative z-10 w-full px-6 text-center">
-        {/* Eyes photo popup - Sutil e no canto */}
-        {showEyesPhoto && (
-          <div className="fixed top-8 right-8 z-20 animate-fade-in opacity-70 hover:opacity-100 transition-opacity duration-500">
-            <div className="bg-black/60 backdrop-blur-sm rounded-lg p-3 border border-blood-red-400/20 shadow-lg">
-              <div className="w-48 h-12 bg-gradient-to-r from-blood-red-900/30 to-purple-900/30 rounded flex items-center justify-center text-blood-red-200 text-xs">
-                👀 Seus olhos únicos
-              </div>
+        {/* Eyes photo popup - Smooth entrance */}
+        <div
+          className={`fixed top-8 right-8 z-20 transition-all duration-700 ease-custom ${
+            showEyesPhoto
+              ? "opacity-80 translate-y-0 scale-100"
+              : "opacity-0 translate-y-4 scale-95 pointer-events-none"
+          }`}
+        >
+          <div className="bg-black/50 backdrop-blur-smooth rounded-xl p-4 border border-blood-red-400/20 shadow-2xl smooth-transition smooth-hover">
+            <div className="w-52 h-14 bg-gradient-to-r from-blood-red-900/20 to-purple-900/20 rounded-lg flex items-center justify-center text-blood-red-200 text-sm font-light">
+              ✨ Seus olhos únicos
             </div>
           </div>
-        )}
+        </div>
 
-        {/* Main poem content */}
+        {/* Main poem content with smooth text reveal */}
         <div className="min-h-[200px] flex items-center justify-center">
-          <div
-            className="transition-all duration-1000 text-white opacity-100 transform translate-y-0"
-            key={`${currentPhase}-${currentLineIndex}`}
-          >
+          <div key={lineKey} className="animate-text-reveal will-change-transform will-change-opacity">
             <div
-              className={`leading-relaxed ${
+              className={`leading-relaxed smooth-transition ${
                 currentPhase === "welcome"
                   ? "text-xl md:text-2xl lg:text-3xl font-light"
                   : "text-lg md:text-xl lg:text-2xl font-light"
               } ${getCurrentLine().includes("(seus olhos") ? "text-blood-red-300 italic text-base" : ""} ${
                 getCurrentLine().includes("seus olhos") ? "text-blood-red-200" : ""
-              }`}
+              } text-white`}
             >
               {getCurrentLine()}
             </div>
           </div>
         </div>
 
-        {/* Days Counter Popup - Sutil e no canto inferior */}
-        {showDaysCounter && (
-          <div className="fixed bottom-8 left-8 z-20 animate-scale-in opacity-80 hover:opacity-100 transition-opacity duration-500">
-            <div className="bg-black/70 backdrop-blur-lg rounded-xl p-4 border border-blood-red-400/20 shadow-xl max-w-xs">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Heart className="text-blood-red-400 animate-pulse-heart fill-current" size={16} />
-                <h3 className="text-sm font-bold text-blood-red-200">Te amando há</h3>
-                <Heart className="text-blood-red-400 animate-pulse-heart fill-current" size={16} />
-              </div>
+        {/* Days Counter Popup - Smooth entrance */}
+        <div
+          className={`fixed bottom-8 left-8 z-20 transition-all duration-700 ease-custom ${
+            showDaysCounter
+              ? "opacity-90 translate-y-0 scale-100"
+              : "opacity-0 translate-y-4 scale-95 pointer-events-none"
+          }`}
+        >
+          <div className="bg-black/60 backdrop-blur-smooth rounded-xl p-5 border border-blood-red-400/20 shadow-2xl max-w-xs smooth-transition smooth-hover">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <Heart className="text-blood-red-400 animate-soft-pulse fill-current" size={18} />
+              <h3 className="text-sm font-semibold text-blood-red-200">Te amando há</h3>
+              <Heart className="text-blood-red-400 animate-soft-pulse fill-current" size={18} />
+            </div>
 
-              <div className="grid grid-cols-2 gap-2 text-center">
-                <div className="bg-blood-red-900/20 rounded-lg p-2">
-                  <div className="text-lg font-bold text-blood-red-300">{days}</div>
-                  <div className="text-xs text-blood-red-400">dias</div>
+            <div className="grid grid-cols-2 gap-3 text-center">
+              {[
+                { value: days, label: "dias" },
+                { value: hours, label: "horas" },
+                { value: minutes, label: "min" },
+                { value: seconds, label: "seg" },
+              ].map((item, index) => (
+                <div
+                  key={index}
+                  className={`bg-blood-red-900/20 rounded-lg p-3 smooth-transition hover:bg-blood-red-900/30 stagger-${index + 1}`}
+                >
+                  <div className="text-xl font-bold text-blood-red-300 smooth-transition">{item.value}</div>
+                  <div className="text-xs text-blood-red-400">{item.label}</div>
                 </div>
-                <div className="bg-blood-red-900/20 rounded-lg p-2">
-                  <div className="text-lg font-bold text-blood-red-300">{hours}</div>
-                  <div className="text-xs text-blood-red-400">horas</div>
-                </div>
-                <div className="bg-blood-red-900/20 rounded-lg p-2">
-                  <div className="text-lg font-bold text-blood-red-300">{minutes}</div>
-                  <div className="text-xs text-blood-red-400">min</div>
-                </div>
-                <div className="bg-blood-red-900/20 rounded-lg p-2">
-                  <div className="text-lg font-bold text-blood-red-300">{seconds}</div>
-                  <div className="text-xs text-blood-red-400">seg</div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   )
