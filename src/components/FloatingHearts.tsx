@@ -16,12 +16,12 @@ const FloatingHearts = () => {
   useEffect(() => {
     const generateHearts = () => {
       const newHearts: HeartPosition[] = [];
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 6; i++) {
         newHearts.push({
           id: i,
           x: Math.random() * 100,
           y: Math.random() * 100,
-          size: Math.random() * 8 + 4,
+          size: Math.random() * 6 + 3,
           delay: Math.random() * 4
         });
       }
@@ -31,14 +31,14 @@ const FloatingHearts = () => {
     generateHearts();
   }, []);
 
-  const colors = ['text-purple-600', 'text-blue-600', 'text-pink-500'];
+  const colors = ['text-blood-red-600', 'text-purple-600', 'text-blood-red-500'];
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       {hearts.map((heart) => (
         <div
           key={heart.id}
-          className="absolute opacity-20"
+          className="absolute opacity-15"
           style={{
             left: `${heart.x}%`,
             top: `${heart.y}%`,
