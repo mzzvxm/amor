@@ -111,6 +111,76 @@
   }
 }
 
+/* Subtle red gradients for poem section */
+@keyframes redGradient1 {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateX(-100%) rotate(0deg);
+  }
+  50% {
+    opacity: 0.15;
+    transform: translateX(100%) rotate(180deg);
+  }
+}
+
+@keyframes redGradient2 {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateY(-100%) rotate(0deg);
+  }
+  50% {
+    opacity: 0.1;
+    transform: translateY(100%) rotate(90deg);
+  }
+}
+
+@keyframes redGradient3 {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  50% {
+    opacity: 0.08;
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+}
+
+.poem-red-gradient-1 {
+  position: absolute;
+  top: 20%;
+  left: 0;
+  width: 300px;
+  height: 200px;
+  background: radial-gradient(ellipse, rgba(220, 38, 38, 0.3) 0%, transparent 70%);
+  animation: redGradient1 15s ease-in-out infinite;
+  animation-delay: 0s;
+}
+
+.poem-red-gradient-2 {
+  position: absolute;
+  top: 0;
+  right: 10%;
+  width: 250px;
+  height: 300px;
+  background: linear-gradient(45deg, rgba(239, 68, 68, 0.2) 0%, transparent 60%);
+  animation: redGradient2 18s ease-in-out infinite;
+  animation-delay: 3s;
+}
+
+.poem-red-gradient-3 {
+  position: absolute;
+  bottom: 30%;
+  left: 50%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(185, 28, 28, 0.15) 0%, transparent 50%);
+  animation: redGradient3 20s ease-in-out infinite;
+  animation-delay: 6s;
+}
+
 /* Word Effect Animations */
 @keyframes fervorPulse {
   0%,
@@ -364,6 +434,20 @@
 }
 
 /* Smooth fade animations */
+/* Adicionar a animação de text-reveal que está faltando */
+@keyframes text-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
 @keyframes smoothFadeIn {
   0% {
     opacity: 0;
@@ -409,19 +493,6 @@
   }
 }
 
-@keyframes textReveal {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-    filter: blur(4px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-}
-
 @keyframes letterSpacing {
   0%,
   100% {
@@ -464,8 +535,9 @@
   animation: gentleSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Garantir que a classe animate-text-reveal use a animação correta */
 .animate-text-reveal {
-  animation: enhancedTextReveal 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: text-reveal 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .animate-soft-pulse {
