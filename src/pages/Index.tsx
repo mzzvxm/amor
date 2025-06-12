@@ -68,7 +68,7 @@ const Index = () => {
                 <Heart className="text-blood-red-400 animate-soft-pulse fill-current" size={40} />
               </div>
               <p className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed animate-slide-in">
-                Um lugar especial onde guardo todos os momentos, sentimentos e memórias que construímos juntos
+                Eu te amo minha pituca
               </p>
             </header>
 
