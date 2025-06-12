@@ -1,9 +1,71 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { Heart } from "lucide-react"
 
 interface PoemSectionProps {
   onProgressUpdate?: (progress: number) => void
+}
+
+// Component for floating hearts specifically for the poem section
+const PoemFloatingHearts = () => {
+  const [hearts, setHearts] = useState<
+    Array<{
+      id: number
+      x: number
+      y: number
+      size: number
+      delay: number
+      duration: number
+      opacity: number
+    }>
+  >([])
+
+  useEffect(() => {
+    const generateHearts = () => {
+      const newHearts = []
+      for (let i = 0; i < 8; i++) {
+        newHearts.push({
+          id: i,
+          x: Math.random() * 100,
+          y: 100 + Math.random() * 20,
+          size: Math.random() * 1.5 + 0.8, // Smaller hearts for poem
+          delay: Math.random() * 8,
+          duration: Math.random() * 8 + 12, // 12-20s duration
+          opacity: Math.random() * 0.25 + 0.1, // Very subtle (0.1-0.35)
+        })
+      }
+      setHearts(newHearts)
+    }
+
+    generateHearts()
+
+    const interval = setInterval(() => {
+      generateHearts()
+    }, 12000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {hearts.map((heart) => (
+        <div
+          key={heart.id}
+          className="absolute"
+          style={{
+            left: `${heart.x}%`,
+            bottom: `-5%`,
+            opacity: heart.opacity,
+            animation: `floatUpHeart ${heart.duration}s ease-in-out infinite`,
+            animationDelay: `${heart.delay}s`,
+          }}
+        >
+          <Heart size={heart.size * 12} className="text-blood-red-400 fill-current" />
+        </div>
+      ))}
+    </div>
+  )
 }
 
 const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
@@ -187,7 +249,7 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
     }, duration)
 
     return () => clearTimeout(timer)
-  }, [currentLineIndex, currentPhase, isComplete, onProgressUpdate])
+  }, [currentLineIndex, currentPhase, isComplete, onProgressUpdate, showTimeText, showEyesPhoto])
 
   if (isComplete) {
     return null
@@ -198,6 +260,16 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-95 backdrop-blur-smooth flex items-center justify-center overflow-hidden">
+      {/* Floating Hearts for Poem Section */}
+      <PoemFloatingHearts />
+
+      {/* Subtle Red Gradients */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="poem-red-gradient-1"></div>
+        <div className="poem-red-gradient-2"></div>
+        <div className="poem-red-gradient-3"></div>
+      </div>
+
       {/* Enhanced gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-blood-red-900/8 via-purple-900/5 via-transparent to-blood-red-900/8 animate-gradient"></div>
 
