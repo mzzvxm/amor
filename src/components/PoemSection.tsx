@@ -90,7 +90,7 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
   const poemLines = [
     "sinto um fervor subir do peito quando penso em ti",
     "e não desses que queimam e somem",
-    "mas um que se espalha devargarinho",
+    "mas um que se espalha devagarinho",
     "do coração até a ponta dos dedos",
     "como se teu nome tivesse acendido uma estrela dentro de mim",
     "e transformasse cada célula do meu corpo",
