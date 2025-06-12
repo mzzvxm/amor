@@ -93,6 +93,24 @@
   }
 }
 
+/* Floating hearts animation from bottom to top */
+@keyframes floatUpHeart {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--heart-opacity, 0.3);
+  }
+  90% {
+    opacity: var(--heart-opacity, 0.3);
+  }
+  100% {
+    transform: translateY(-100vh) rotate(calc(var(--heart-rotate, 20) * 1deg));
+    opacity: 0;
+  }
+}
+
 /* Word Effect Animations */
 @keyframes fervorPulse {
   0%,
@@ -523,4 +541,26 @@ html {
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradientShift 8s ease infinite;
+}
+
+/* FlashCard 3D effect */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Shadow glow effect for red elements */
+.shadow-glow-red {
+  box-shadow: 0 0 15px rgba(220, 38, 38, 0.3);
 }

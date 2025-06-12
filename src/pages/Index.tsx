@@ -4,19 +4,26 @@ import { useState } from "react"
 import DaysCounter from "../components/DaysCounter"
 import PoemSection from "../components/PoemSection"
 import FloatingHearts from "../components/FloatingHearts"
+import FlashCardsSection from "../components/FlashCardsSection"
 import { Heart } from "lucide-react"
 
 const Index = () => {
   const [poemProgress, setPoemProgress] = useState(0)
   const [showMainContent, setShowMainContent] = useState(false)
+  const [showFlashCards, setShowFlashCards] = useState(false)
 
   const handlePoemProgress = (progress: number) => {
     setPoemProgress(progress)
 
-    // Show main content only after poem is complete
-    if (progress >= 100 && !showMainContent) {
-      setTimeout(() => setShowMainContent(true), 800) // Smooth delay
+    // Show flashcards first after poem is complete
+    if (progress >= 100 && !showFlashCards) {
+      setTimeout(() => setShowFlashCards(true), 800) // Smooth delay
     }
+  }
+
+  // Show main content after a delay when flashcards are shown
+  const handleContinueToMainContent = () => {
+    setShowMainContent(true)
   }
 
   return (
@@ -31,7 +38,24 @@ const Index = () => {
           </section>
         )}
 
-        {/* Main Content - Shows only after poem is complete */}
+        {/* Flash Cards Section - Shows after poem is complete */}
+        {showFlashCards && !showMainContent && (
+          <section className="w-full py-12">
+            <FlashCardsSection />
+
+            <div className="mt-16 text-center">
+              <button
+                onClick={handleContinueToMainContent}
+                className="glass-effect px-8 py-3 rounded-full border border-blood-red-400/30 text-blood-red-100 flex items-center gap-2 mx-auto hover:border-blood-red-400/50 hover:shadow-glow-red transition-all duration-300"
+              >
+                <span>Continuar</span>
+                <Heart className="text-blood-red-400 fill-current" size={16} />
+              </button>
+            </div>
+          </section>
+        )}
+
+        {/* Main Content - Shows only after flashcards */}
         {showMainContent && (
           <div className="space-y-20 animate-fade-in">
             {/* Header */}
@@ -51,21 +75,6 @@ const Index = () => {
             {/* Days Counter */}
             <section className="max-w-md mx-auto stagger-1 animate-fade-in">
               <DaysCounter />
-            </section>
-
-            {/* Love Questions */}
-            <section className="max-w-3xl mx-auto stagger-2 animate-fade-in">
-              <LoveQuestions />
-            </section>
-
-            {/* Memories Gallery */}
-            <section className="max-w-6xl mx-auto stagger-3 animate-fade-in">
-              <MemoriesGallery />
-            </section>
-
-            {/* Spotify Player */}
-            <section className="max-w-2xl mx-auto stagger-4 animate-fade-in">
-              <SpotifyPlayer />
             </section>
 
             {/* Footer */}

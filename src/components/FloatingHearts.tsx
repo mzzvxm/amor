@@ -9,6 +9,8 @@ interface HeartPosition {
   y: number
   size: number
   delay: number
+  duration: number
+  opacity: number
 }
 
 const FloatingHearts = () => {
@@ -17,19 +19,28 @@ const FloatingHearts = () => {
   useEffect(() => {
     const generateHearts = () => {
       const newHearts: HeartPosition[] = []
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 12; i++) {
         newHearts.push({
           id: i,
           x: Math.random() * 100,
-          y: Math.random() * 100,
-          size: Math.random() * 3 + 2,
-          delay: Math.random() * 8,
+          y: 100 + Math.random() * 20, // Start below the viewport
+          size: Math.random() * 2 + 1, // Smaller hearts (1-3)
+          delay: Math.random() * 10,
+          duration: Math.random() * 10 + 15, // Longer animation (15-25s)
+          opacity: Math.random() * 0.3 + 0.1, // More subtle opacity (0.1-0.4)
         })
       }
       setHearts(newHearts)
     }
 
     generateHearts()
+
+    // Regenerate hearts periodically
+    const interval = setInterval(() => {
+      generateHearts()
+    }, 15000)
+
+    return () => clearInterval(interval)
   }, [])
 
   return (
@@ -37,20 +48,16 @@ const FloatingHearts = () => {
       {hearts.map((heart) => (
         <div
           key={heart.id}
-          className="absolute opacity-10"
+          className="absolute"
           style={{
             left: `${heart.x}%`,
-            top: `${heart.y}%`,
+            bottom: `-5%`,
+            opacity: heart.opacity,
+            animation: `floatUpHeart ${heart.duration}s ease-in-out infinite`,
             animationDelay: `${heart.delay}s`,
           }}
         >
-          <Heart
-            size={heart.size}
-            className="text-blood-red-400 fill-current"
-            style={{
-              animation: `heartFloat 12s ease-in-out infinite`,
-            }}
-          />
+          <Heart size={heart.size * 10} className="text-blood-red-400 fill-current" />
         </div>
       ))}
     </div>
