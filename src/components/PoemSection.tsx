@@ -80,11 +80,11 @@ const PoemSection = ({ onProgressUpdate }: PoemSectionProps) => {
   const [minutes, setMinutes] = useState(0)
 
   const welcomeLines = [
-    "oi meu amor",
-    "hoje é dia 12",
-    "eu fiz esse site pra tentar demonstrar todo o meu amor por você, mesmo que apenas assim seja pouco",
-    "eu provavelmente estou na sua frente agora",
-    "eu te amo. aproveite um de seus presentes!",
+    "oi moo",
+    "novamente aqui né",
+    "sabia que eu te amo muito minha pequena?",
+    "eu quero você pra sempre moo",
+    "bejocaa",
   ]
 
   const poemLines = [
